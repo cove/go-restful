@@ -23,7 +23,7 @@ type RouteBuilder struct {
 	function    RouteFunction // required
 	filters     []FilterFunction
 	// Added by Frank
-	RequiredPermission *Permission
+	RequiredPermission interface{}
 
 	// documentation
 	doc                     string
@@ -51,7 +51,7 @@ func (b *RouteBuilder) Do(oneArgBlocks ...func(*RouteBuilder)) *RouteBuilder {
 
 // Added by Frank
 // Set the required permission
-func (b *RouteBuilder) RequirePermission(permission *Permission) *RouteBuilder {
+func (b *RouteBuilder) RequirePermission(permission interface{}) *RouteBuilder {
 	b.RequiredPermission = permission
 	return b
 }

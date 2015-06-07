@@ -13,12 +13,6 @@ import (
 // RouteFunction declares the signature of a function that can be bound to a Route.
 type RouteFunction func(*Request, *Response)
 
-// Added by Frank
-type Permission struct {
-	Resource string  // Name of resource. Support {userId}
-	Action int       // [CRUD], C:1, R:2, U:4, D:8
-}
-
 // Route binds a HTTP Method,Path,Consumes combination to a RouteFunction.
 type Route struct {
 	Method   string
@@ -28,7 +22,7 @@ type Route struct {
 	Function RouteFunction
 	Filters  []FilterFunction
 	// Added by Frank
-	RequiredPermission *Permission
+	RequiredPermission interface{}
 
 	// cached values for dispatching
 	relativePath string

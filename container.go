@@ -58,7 +58,7 @@ func (c *Container) RecoverHandler(handler RecoverHandleFunction) {
 
 // Added by Frank
 // Used to check permission of a request
-type PermissionCheckFunc func (*Request, *Response, *Permission) bool
+type PermissionCheckFunc func (*Request, *Response, interface{}) bool
 func (c *Container) PermissionChecker(checker PermissionCheckFunc) {
 	c.permissionCheckFunc = checker
 }
