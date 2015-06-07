@@ -221,23 +221,35 @@ func (c *Container) dispatch(httpWriter http.ResponseWriter, httpRequest *http.R
 		allFilters = append(allFilters, webService.filters...)
 		allFilters = append(allFilters, route.Filters...)
 		chain := FilterChain{Filters: allFilters, Target: func(req *Request, resp *Response) {
+			// handle request by route after passing all filters
 			// Added by Frank
-			if c.permissionCheckFunc != nil && route.RequiredPermission != nil {
-				if c.permissionCheckFunc(wrappedRequest, wrappedResponse, route.RequiredPermission) {
-					// handle request by route after passing all filters
-					route.Function(wrappedRequest, wrappedResponse)
-				}
-			}
+			c.processRoute(wrappedRequest, wrappedResponse, route)
 		}}
 		chain.ProcessFilter(wrappedRequest, wrappedResponse)
 	} else {
+		// handle request by route no filters
 		// Added by Frank
-		if c.permissionCheckFunc != nil && route.RequiredPermission != nil {
-			if c.permissionCheckFunc(wrappedRequest, wrappedResponse, route.RequiredPermission) {
-				// no filters, handle request by route
-				route.Function(wrappedRequest, wrappedResponse)
-			}
+		c.processRoute(wrappedRequest, wrappedResponse, route)
+	}
+}
+
+// Added by Frank
+func (c *Container) processRoute(request *Request, response *Response, route *Route) {
+	if route.requiredPermission != nil {
+		var permCheckFunc PermissionCheckFunc
+		if route.permissionCheckFunc != nil {
+			permCheckFunc = route.permissionCheckFunc
+		} else if c.permissionCheckFunc != nil {
+			permCheckFunc = c.permissionCheckFunc
 		}
+		if permCheckFunc != nil && permCheckFunc(request, response, route.requiredPermission) {
+			route.Function(request, response)
+		} else {
+			response.WriteHeader(http.StatusUnauthorized)
+			response.Write(nil)
+		}
+	} else {
+		route.Function(request, response)
 	}
 }
 

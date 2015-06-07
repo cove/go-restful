@@ -22,7 +22,8 @@ type Route struct {
 	Function RouteFunction
 	Filters  []FilterFunction
 	// Added by Frank
-	RequiredPermission interface{}
+	requiredPermission  interface{}
+	permissionCheckFunc PermissionCheckFunc
 
 	// cached values for dispatching
 	relativePath string

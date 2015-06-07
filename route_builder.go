@@ -23,7 +23,8 @@ type RouteBuilder struct {
 	function    RouteFunction // required
 	filters     []FilterFunction
 	// Added by Frank
-	RequiredPermission interface{}
+	requiredPermission     interface{}
+	permissionCheckFunc    PermissionCheckFunc
 
 	// documentation
 	doc                     string
@@ -52,7 +53,13 @@ func (b *RouteBuilder) Do(oneArgBlocks ...func(*RouteBuilder)) *RouteBuilder {
 // Added by Frank
 // Set the required permission
 func (b *RouteBuilder) RequirePermission(permission interface{}) *RouteBuilder {
-	b.RequiredPermission = permission
+	b.requiredPermission = permission
+	return b
+}
+
+// Set the permission checker (override the permission checker in container.go)
+func (b *RouteBuilder) PermissionChecker(checker PermissionCheckFunc) *RouteBuilder {
+	b.permissionCheckFunc = checker
 	return b
 }
 
@@ -229,7 +236,8 @@ func (b *RouteBuilder) Build() Route {
 		ReadSample:     b.readSample,
 		WriteSample:    b.writeSample,
 		// Added by Frank
-		RequiredPermission: b.RequiredPermission,
+		requiredPermission: b.requiredPermission,
+		permissionCheckFunc: b.permissionCheckFunc,
 	}
 	route.postBuild()
 	return route
