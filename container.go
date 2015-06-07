@@ -25,6 +25,9 @@ type Container struct {
 	doNotRecover           bool // default is false
 	recoverHandleFunc      RecoverHandleFunction
 	serviceErrorHandleFunc ServiceErrorHandleFunction
+	// Added by Frank
+	permissionCheckFunc    PermissionCheckFunc
+
 	router                 RouteSelector // default is a RouterJSR311, CurlyRouter is the faster alternative
 	contentEncodingEnabled bool          // default is false
 }
@@ -51,6 +54,13 @@ type RecoverHandleFunction func(interface{}, http.ResponseWriter)
 // when a panic is detected. DoNotRecover must be have its default value (=false).
 func (c *Container) RecoverHandler(handler RecoverHandleFunction) {
 	c.recoverHandleFunc = handler
+}
+
+// Added by Frank
+// Used to check permission of a request
+type PermissionCheckFunc func (*Request, *Response, *Permission) bool
+func (c *Container) PermissionChecker(checker PermissionCheckFunc) {
+	c.permissionCheckFunc = checker
 }
 
 // ServiceErrorHandleFunction declares functions that can be used to handle a service error situation.
@@ -211,13 +221,23 @@ func (c *Container) dispatch(httpWriter http.ResponseWriter, httpRequest *http.R
 		allFilters = append(allFilters, webService.filters...)
 		allFilters = append(allFilters, route.Filters...)
 		chain := FilterChain{Filters: allFilters, Target: func(req *Request, resp *Response) {
-			// handle request by route after passing all filters
-			route.Function(wrappedRequest, wrappedResponse)
+			// Added by Frank
+			if c.permissionCheckFunc != nil && route.RequiredPermission != nil {
+				if c.permissionCheckFunc(wrappedRequest, wrappedResponse, route.RequiredPermission) {
+					// handle request by route after passing all filters
+					route.Function(wrappedRequest, wrappedResponse)
+				}
+			}
 		}}
 		chain.ProcessFilter(wrappedRequest, wrappedResponse)
 	} else {
-		// no filters, handle request by route
-		route.Function(wrappedRequest, wrappedResponse)
+		// Added by Frank
+		if c.permissionCheckFunc != nil && route.RequiredPermission != nil {
+			if c.permissionCheckFunc(wrappedRequest, wrappedResponse, route.RequiredPermission) {
+				// no filters, handle request by route
+				route.Function(wrappedRequest, wrappedResponse)
+			}
+		}
 	}
 }
 

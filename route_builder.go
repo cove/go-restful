@@ -22,6 +22,9 @@ type RouteBuilder struct {
 	httpMethod  string        // required
 	function    RouteFunction // required
 	filters     []FilterFunction
+	// Added by Frank
+	RequiredPermission *Permission
+
 	// documentation
 	doc                     string
 	notes                   string
@@ -43,6 +46,13 @@ func (b *RouteBuilder) Do(oneArgBlocks ...func(*RouteBuilder)) *RouteBuilder {
 	for _, each := range oneArgBlocks {
 		each(b)
 	}
+	return b
+}
+
+// Added by Frank
+// Set the required permission
+func (b *RouteBuilder) RequirePermission(permission *Permission) *RouteBuilder {
+	b.RequiredPermission = permission
 	return b
 }
 
@@ -217,7 +227,10 @@ func (b *RouteBuilder) Build() Route {
 		ParameterDocs:  b.parameters,
 		ResponseErrors: b.errorMap,
 		ReadSample:     b.readSample,
-		WriteSample:    b.writeSample}
+		WriteSample:    b.writeSample,
+		// Added by Frank
+		RequiredPermission: b.RequiredPermission,
+	}
 	route.postBuild()
 	return route
 }
