@@ -3,7 +3,7 @@ package swagger
 import (
 	"testing"
 
-	"github.com/emicklei/go-restful"
+	"github.com/codefl/go-restful"
 )
 
 // go test -v -test.run TestServiceToApi ...swagger

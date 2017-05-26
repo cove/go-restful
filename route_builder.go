@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/emicklei/go-restful/log"
+	"github.com/codefl/go-restful/log"
 )
 
 // RouteBuilder is a helper to construct Routes.
@@ -23,8 +23,8 @@ type RouteBuilder struct {
 	function    RouteFunction // required
 	filters     []FilterFunction
 	// Added by Frank
-	requiredPermission     interface{}
-	permissionCheckFunc    PermissionCheckFunc
+	requiredPermission  interface{}
+	permissionCheckFunc PermissionCheckFunc
 
 	// documentation
 	doc                     string
@@ -236,7 +236,7 @@ func (b *RouteBuilder) Build() Route {
 		ReadSample:     b.readSample,
 		WriteSample:    b.writeSample,
 		// Added by Frank
-		requiredPermission: b.requiredPermission,
+		requiredPermission:  b.requiredPermission,
 		permissionCheckFunc: b.permissionCheckFunc,
 	}
 	route.postBuild()

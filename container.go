@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/emicklei/go-restful/log"
+	"github.com/codefl/go-restful/log"
 )
 
 // Container holds a collection of WebServices and a http.ServeMux to dispatch http requests.
@@ -26,7 +26,7 @@ type Container struct {
 	recoverHandleFunc      RecoverHandleFunction
 	serviceErrorHandleFunc ServiceErrorHandleFunction
 	// Added by Frank
-	permissionCheckFunc    PermissionCheckFunc
+	permissionCheckFunc PermissionCheckFunc
 
 	router                 RouteSelector // default is a RouterJSR311, CurlyRouter is the faster alternative
 	contentEncodingEnabled bool          // default is false
@@ -58,7 +58,8 @@ func (c *Container) RecoverHandler(handler RecoverHandleFunction) {
 
 // Added by Frank
 // Used to check permission of a request
-type PermissionCheckFunc func (*Request, *Response, interface{}) bool
+type PermissionCheckFunc func(*Request, *Response, interface{}) bool
+
 func (c *Container) PermissionChecker(checker PermissionCheckFunc) {
 	c.permissionCheckFunc = checker
 }
