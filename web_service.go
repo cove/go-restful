@@ -3,7 +3,7 @@ package restful
 import (
 	"os"
 
-	"github.com/codefl/go-restful/log"
+	"github.com/AccelByte/go-restful/log"
 )
 
 // Copyright 2013 Ernest Micklei. All rights reserved.
