@@ -3,8 +3,8 @@ package main
 import (
 	"appengine"
 	"appengine/memcache"
-	"github.com/emicklei/go-restful"
-	"github.com/emicklei/go-restful/swagger"
+	"github.com/AccelByte/go-restful"
+	"github.com/AccelByte/go-restful/swagger"
 	"net/http"
 )
 
