@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/emicklei/go-restful"
+	"github.com/AccelByte/go-restful"
 	"io"
 	"net/http"
 )
