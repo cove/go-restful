@@ -180,7 +180,7 @@ func (sws SwaggerService) getDeclarations(req *restful.Request, resp *restful.Re
 		} else {
 			proto = protovalue[0]
 		}
-		(&decl).BasePath = fmt.Sprintf("%s://%s", host, proto)
+		(&decl).BasePath = fmt.Sprintf("%s://%s", proto, host)
 	}
 	resp.WriteAsJson(decl)
 }
