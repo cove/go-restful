@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strings"
 
+	restful "github.com/AccelByte/go-restful"
 	"github.com/AccelByte/go-restful/log"
 )
 
@@ -158,7 +159,6 @@ func (sws SwaggerService) getDeclarations(req *restful.Request, resp *restful.Re
 	// unless WebServicesUrl is given
 	if len(sws.config.WebServicesUrl) == 0 {
 		// update base path from the actual request
-		// TODO how to detect https? assume http for now
 		var host string
 		// X-Forwarded-Host or Host or Request.Host
 		hostvalues, ok := req.Request.Header["X-Forwarded-Host"] // apache specific?
@@ -173,7 +173,6 @@ func (sws SwaggerService) getDeclarations(req *restful.Request, resp *restful.Re
 		} else {
 			host = hostvalues[0]
 		}
-
 		var proto string
 		protovalue, ok := req.Request.Header["X-Forwarded-Proto"]
 		if !ok {
