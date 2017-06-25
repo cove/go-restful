@@ -3,14 +3,13 @@ package swagger
 import (
 	"fmt"
 
-	"github.com/AccelByte/go-restful"
 	// "github.com/emicklei/hopwatch"
+	"github.com/AccelByte/go-restful"
+	"github.com/AccelByte/go-restful/log"
 	"net/http"
 	"reflect"
 	"sort"
 	"strings"
-
-	"github.com/AccelByte/go-restful/log"
 )
 
 type SwaggerService struct {
@@ -173,7 +172,15 @@ func (sws SwaggerService) getDeclarations(req *restful.Request, resp *restful.Re
 		} else {
 			host = hostvalues[0]
 		}
-		(&decl).BasePath = fmt.Sprintf("http://%s", host)
+
+		var proto string
+		protovalue, ok := req.Request.Header["X-Forwarded-Proto"]
+		if !ok {
+			proto = "http"
+		} else {
+			proto = protovalue
+		}
+		(&decl).BasePath = fmt.Sprintf("%s://%s", host, proto)
 	}
 	resp.WriteAsJson(decl)
 }
