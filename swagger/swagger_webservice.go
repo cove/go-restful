@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	// "github.com/emicklei/hopwatch"
-	"github.com/AccelByte/go-restful"
-	"github.com/AccelByte/go-restful/log"
+
 	"net/http"
 	"reflect"
 	"sort"
 	"strings"
+
+	"github.com/AccelByte/go-restful/log"
 )
 
 type SwaggerService struct {
@@ -178,7 +179,7 @@ func (sws SwaggerService) getDeclarations(req *restful.Request, resp *restful.Re
 		if !ok {
 			proto = "http"
 		} else {
-			proto = protovalue
+			proto = protovalue[0]
 		}
 		(&decl).BasePath = fmt.Sprintf("%s://%s", host, proto)
 	}
